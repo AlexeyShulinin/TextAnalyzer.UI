@@ -11,5 +11,5 @@ docker build -t text-analyzer-ui .
 ## Docker Image run:
 
 ```
-docker run -p 3000:3000 text-analyzer-ui
+docker run -p 9000:3000 text-analyzer-ui
 ```
