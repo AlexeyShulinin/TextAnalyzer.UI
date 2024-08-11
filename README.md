@@ -13,3 +13,9 @@ docker build -t text-analyzer-ui .
 ```
 docker run -p 9000:3000 text-analyzer-ui
 ```
+
+## Docker-Compose run:
+
+```
+docker compose up
+```

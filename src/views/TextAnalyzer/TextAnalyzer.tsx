@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { JSX, useMemo } from 'react';
 import {
     Button,
     Form,
@@ -13,7 +13,7 @@ import '../../assets/layout.css';
 import { useText } from './useText';
 import { INPUT_SOURCE, INPUT_SOURCE_OPTIONS } from './constants';
 
-const TextAnalyzer = () => {
+const TextAnalyzer = (): JSX.Element => {
     const {
         text,
         onTextChange,

@@ -1,66 +1,68 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TextAnalyzer from 'ash-text-analyzer';
+import { TextAnalyzer } from 'ash-text-analyzer';
+import { INPUT_SOURCE } from './constants';
+import { readFile } from '../../helpers/fileHelper';
 
 export const useText = () => {
     const [text, setText] = useState<string>('');
-    const [textSource, setTextSource] = useState<number>(1);
+    const [textSource, setTextSource] = useState<number>(INPUT_SOURCE.TEXT);
     const navigate = useNavigate();
 
-    function handleTextChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    const onTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setText(event.target.value);
-    }
+    };
 
-    function handleTextSourceChange(event: ChangeEvent<HTMLSelectElement>) {
-        setTextSource(Number(event.target.value));
-    }
+    const onTextSourceChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        const source = Number(event.target.value);
+        if (isNaN(source)) {
+            alert('Invalid source');
+            return;
+        }
 
-    function handleFormSubmit(event: FormEvent) {
-        if (text !== '') {
-            event.preventDefault();
-            const textAnalyzer = new TextAnalyzer(text);
-            navigate(`/result`, {
-                state: {
-                    textAnalyzer: textAnalyzer,
-                },
-            });
-        } else {
+        setTextSource(source);
+    };
+
+    const onSubmit = (event: FormEvent) => {
+        event.preventDefault();
+
+        if (!text) {
             alert('Please enter a valid text');
+            return;
         }
-    }
 
-    function handleFileInput(event: ChangeEvent<HTMLInputElement>) {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
+        const textAnalyzer = new TextAnalyzer(text);
+        navigate(`/result`, {
+            state: {
+                textAnalyzer: textAnalyzer,
+            },
+        });
+    };
 
-            reader.addEventListener(
-                'load',
-                () => {
-                    const result = reader.result;
-                    if (result && typeof result === 'string') {
-                        setText(result);
-                    } else {
-                        alert(`Could not upload file`);
-                    }
-                },
-                false,
-            );
-
-            if (file) {
-                reader.readAsText(file);
-            }
-        } else {
+    const onFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.files || !event.target.files[0]) {
             alert(`Could not upload file`);
+            return;
         }
-    }
+
+        readFile(event.target.files[0])
+            .then(
+                (result) => {
+                    setText(result);
+                },
+                (error) => {
+                    alert(error);
+                },
+            )
+            .catch((error) => alert(error));
+    };
 
     return {
         text,
-        onTextChange: handleTextChange,
-        onFileInputChange: handleFileInput,
-        onSubmit: handleFormSubmit,
+        onTextChange,
+        onFileInputChange,
+        onSubmit,
         textSource,
-        onTextSourceChange: handleTextSourceChange,
+        onTextSourceChange,
     };
 };

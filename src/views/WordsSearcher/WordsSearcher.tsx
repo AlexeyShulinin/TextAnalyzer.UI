@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Button, Label, Input } from 'text-analyzer-ui-kit';
 
 import '../../assets/layout.css';
 
 import { useWordsSearcher } from './useWordsSearcher';
 
-const WordsSearcher = () => {
+const WordsSearcher = (): JSX.Element => {
     const {
         text,
         onChange,

@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  text-analyzer-ui:
+    build: .
+    container_name: text-analyzer-ui
+    ports:
+      - '9000:3000'
